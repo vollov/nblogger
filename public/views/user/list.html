@@ -1,0 +1,36 @@
+<h1>Issue Notes</h1>
+
+<div class="menu">
+	<form class="navbar-form navbar-left">
+		<div class="form-group">
+			<input type="text" placeholder="Search By Key Word" ng-model="query" class="form-control">
+		</div>
+	</form>
+</div>
+
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>ID</th>
+			<th>name</th>
+			<th>email</th>
+			<th>Delete</th>
+			<th>Edit</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-class-even="'even'" ng-class='{selected: $index==selectedRow}'
+			ng-click="selectUser($index)"
+			ng-repeat="u in users | filter:query">
+			<td>{{$index+1}}</td>
+			<td>{{u.pk}}</td>
+			<td><a href="/#/user/view/{{u.id}}">{{u.username}} ...</a></td>
+			<td>{{u.email}}</td>
+			<td><a class="btn btn-primary"
+				ng-click="deleteUser(u, $index)" ng-class="{disabled: index < 0}">delete</a></td>
+			<td><a class="btn btn-primary"
+				href="/#/user/edit/{{u.id}}" ng-class="{disabled: index < 0}">edit</a></td>
+		<tr>
+	</tbody>
+</table>
