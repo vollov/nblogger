@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('markNote', ['ui.router','hc.marked','user','post'])
+angular.module('markNote', ['ui.router','hc.marked','auth','user','post'])
 .constant('API', 'http://localhost:8000/api/v1.0/')
-.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
 	$stateProvider.state('posts', {
 		url : '/posts',
 		templateUrl : '/views/post/list.html',
@@ -11,6 +11,9 @@ angular.module('markNote', ['ui.router','hc.marked','user','post'])
 			postPromise: ['postService', function(postService){
 				return postService.getAll();
 			}]
+		},
+		data:{
+			requireLogin: false
 		}
 	})
 	.state('users', {
@@ -21,6 +24,9 @@ angular.module('markNote', ['ui.router','hc.marked','user','post'])
 			userPromise: ['userService', function(userService){
 				return userService.getAll();
 			}]
+		},
+		data:{
+			requireLogin: true
 		}
 	})
 	.state('post-view', {
@@ -32,6 +38,9 @@ angular.module('markNote', ['ui.router','hc.marked','user','post'])
 			function($stateParams, postService) {
 				return postService.get($stateParams.id);
 			}]
+		},
+		data:{
+			requireLogin: false
 		}
 	})
 	.state('post-edit', {
@@ -46,6 +55,9 @@ angular.module('markNote', ['ui.router','hc.marked','user','post'])
 			postPromise: ['postService', function(postService){
 				return postService.getTags();
 			}]
+		},
+		data:{
+			requireLogin: true
 		}
 	})
 	.state('post-add', {
@@ -56,10 +68,13 @@ angular.module('markNote', ['ui.router','hc.marked','user','post'])
 			postPromise: ['postService', function(postService){
 				return postService.getTags();
 			}]
+		},
+		data:{
+			requireLogin: true
 		}
 	});
-	
-	$urlRouterProvider.otherwise('users');
+	$httpProvider.interceptors.push('authInterceptor');
+	$urlRouterProvider.otherwise('posts');
 }])
 .config(['markedProvider', function (markedProvider) {
   markedProvider.setOptions({
@@ -73,4 +88,18 @@ angular.module('markNote', ['ui.router','hc.marked','user','post'])
 //      }
 //    }
   });
-}]);
+}])
+.run(function ($rootScope,$state,authService) {
+
+	$rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+		var requireLogin = toState.data.requireLogin;
+		console.log('state change event, isLoggedIn=%s',authService.isLoggedIn());
+		// typeof $rootScope.currentUser === 'undefined'
+		if (requireLogin && (!authService.isLoggedIn())) {
+			event.preventDefault();
+			// code for unauthorized access
+			console.log('state change event -- unauthorized');
+			$state.go('login');
+		}
+	});
+});
