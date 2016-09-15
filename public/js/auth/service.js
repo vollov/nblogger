@@ -1,9 +1,7 @@
 'use strict';
 
-var url = '/api/v1.0/';
-
 angular.module('auth.services', [])
-.factory('authService', [ '$http', '$window', function($http, $window) {
+.factory('authService', [ '$http', '$window', 'API', function($http, $window, API) {
 	var auth = {};
 
 	auth.saveToken = function(token) {
@@ -17,9 +15,12 @@ angular.module('auth.services', [])
 	auth.isLoggedIn = function() {
 		var token = auth.getToken();
 		//console.log('in auth.isLoggedIn token=' + token);
+		// JWT token format: xxxxx.yyyyy.zzzzz  (header.payload.signature)
+		// atob() - decodes a base-64 encoded string.
+		// e.g. translate SGVsbG8gV29ybGQh to Hello World!
 		if (token && token != 'undefined') {
 			var payload = JSON.parse($window.atob(token.split('.')[1]));
-
+			// exp in seconds
 			return payload.exp > Date.now() / 1000;
 		} else {
 			return false;
@@ -35,13 +36,13 @@ angular.module('auth.services', [])
 	};
 	
 	auth.register = function(user) {
-		return $http.post(url + '/register', user).success(function(data) {
+		return $http.post(API + '/register', user).success(function(data) {
 			auth.saveToken(data.token);
 		});
 	};
 
 	auth.logIn = function(user) {
-		return $http.post(url + '/login', user).success(function(data) {
+		return $http.post(API + '/login', user).success(function(data) {
 			auth.saveToken(data.token);
 		});
 	};
@@ -49,8 +50,9 @@ angular.module('auth.services', [])
 	auth.logOut = function() {
 		$window.localStorage.removeItem('beryl-client-token');
 	};
+
 	return auth;
-} ])
+}])
 .factory('authInterceptor', ['$injector','API',function authInterceptor($injector,API) {
 	var interceptor = {};
 	
