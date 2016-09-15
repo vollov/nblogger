@@ -1,8 +1,12 @@
 'use strict';
 
 angular.module('post.controllers', [ 'post.services'])
-.controller('PostCtrl', ['$scope', 'postService',
-function($scope, postService) {
+.controller('BlogCtrl', ['$scope', 'postService', function($scope, postService) {
+	postService.getTags();
+	$scope.posts = postService.posts;
+	$scope.tags = postService.tags;
+}])
+.controller('PostCtrl', ['$scope', 'postService', function($scope, postService) {
 	$scope.posts = postService.posts;
 
 	$scope.selectPost = function(row) {

@@ -1,0 +1,49 @@
+<div class="row text-justify">
+	<div class="col-md-3">
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<strong>About</strong>
+			</div>
+			<div class="panel-body">
+				<p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<strong>Topics</strong>
+			</div>
+			<div class="panel-body">
+				<ol class="list-unstyled">
+					<li ng-repeat="t in tags">
+						<a href="#">{{t.name}}</a>
+					</li>
+				</ol>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<strong>Contacts</strong>
+			</div>
+			<div class="panel-body">
+				<ol class="list-unstyled">
+					<li><a href="#">GitHub</a></li>
+					<li><a href="#">Twitter</a></li>
+					<li><a href="#">Facebook</a></li>
+				</ol>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-9 split-left" >
+		<div ng-repeat="p in posts | filter:query | orderBy:'created'">
+			<h2>{{p.title | limitTo: 70}}</h2>
+			<p>{{p.created }}</p>
+			<div marked="p.abstract"/>
+			<p><a class="btn btn-default" href="/#/blog/view/{{p.slug}}" role="button">View details &raquo;</a></p>
+			<hr>
+		</div>
+	</div>
+</div>

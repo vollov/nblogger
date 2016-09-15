@@ -15,6 +15,13 @@ angular.module('post.services', [])
 		});
 	};
 	
+	service.getBlogs = function() {
+		return $http.get(API + 'blogs')
+		.success(function(data) {
+			angular.copy(data, service.posts);
+		});
+	};
+
 	service.getTags = function() {
 		return $http.get(API + 'tags')
 		.success(function(data) {

@@ -2,6 +2,7 @@
 
 angular.module('markNote', ['ui.router','hc.marked','auth','user','post'])
 .constant('API', 'http://localhost:8000/api/v1.0/')
+.constant('clientTokenName', 'jwt-client-token')
 .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
 	$stateProvider.state('posts', {
 		url : '/posts',
@@ -10,6 +11,20 @@ angular.module('markNote', ['ui.router','hc.marked','auth','user','post'])
 		resolve: {
 			postPromise: ['postService', function(postService){
 				return postService.getAll();
+			}]
+		},
+		data:{
+			requireLogin: false
+		}
+	})
+	// default route to list the blogs
+	.state('blogs', {
+		url : '/blogs',
+		templateUrl : '/views/blog/list.html',
+		controller : 'BlogCtrl',
+		resolve: {
+			postPromise: ['postService', function(postService){
+				return postService.getBlogs();
 			}]
 		},
 		data:{
@@ -72,9 +87,22 @@ angular.module('markNote', ['ui.router','hc.marked','auth','user','post'])
 		data:{
 			requireLogin: true
 		}
+	})
+	.state('login', {
+		url : '/login',
+		templateUrl : '/views/login.html',
+		controller : 'AuthCtrl',
+		onEnter : [ '$state', 'authService', function($state, authService) {
+			if (authService.isLoggedIn()) {
+				$state.go('home');
+			}
+		} ],
+		data:{
+			requireLogin: false
+		}
 	});
 	$httpProvider.interceptors.push('authInterceptor');
-	$urlRouterProvider.otherwise('posts');
+	$urlRouterProvider.otherwise('blogs');
 }])
 .config(['markedProvider', function (markedProvider) {
   markedProvider.setOptions({

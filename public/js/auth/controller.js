@@ -7,7 +7,7 @@ function($scope, authService, $state) {
 	$scope.currentUser = authService.currentUser;
 	$scope.logOut = function(){
 		authService.logOut();
-		$state.go('home');
+		$state.go('posts');
 	};
 }]).controller('AuthCtrl', ['$scope', '$state', 'authService',
 function($scope, $state, authService) {
@@ -17,7 +17,7 @@ function($scope, $state, authService) {
 		authService.register($scope.user).error(function(error) {
 			$scope.error = error;
 		}).then(function() {
-			$state.go('home');
+			$state.go('posts');
 		});
 	};
 

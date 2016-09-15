@@ -1,15 +1,15 @@
 'use strict';
 
 angular.module('auth.services', [])
-.factory('authService', [ '$http', '$window', 'API', function($http, $window, API) {
+.factory('authService', [ '$http', '$window', 'API', 'clientTokenName', function($http, $window, API, clientTokenName) {
 	var auth = {};
 
 	auth.saveToken = function(token) {
-		$window.localStorage['jwt-client-token'] = token;
+		$window.localStorage[clientTokenName] = token;
 	};
 
 	auth.getToken = function() {
-		return $window.localStorage['jwt-client-token'];
+		return $window.localStorage[clientTokenName];
 	};
 	
 	auth.isLoggedIn = function() {
@@ -48,14 +48,13 @@ angular.module('auth.services', [])
 	};
 
 	auth.logOut = function() {
-		$window.localStorage.removeItem('beryl-client-token');
+		$window.localStorage.removeItem(clientTokenName);
 	};
 
 	return auth;
 }])
 .factory('authInterceptor', ['$injector','API',function authInterceptor($injector,API) {
 	var interceptor = {};
-	
 	
 	interceptor.request = function(config) {
 		console.log('testInterceptor request config.url=%s', config.url);
@@ -66,7 +65,7 @@ angular.module('auth.services', [])
 		console.log('testInterceptor request config.url.indexOf(API)=%s, token=%s', config.url.indexOf(API), token);
 		if (config.url.indexOf(API) === 0 && token) {
 			console.log('testInterceptor request --send token = ' + token);
-			config.headers.Authorization = 'Bearer ' + token;
+			config.headers.HTTP_JWT = token;
 		}
 		return config;
 	};
@@ -77,9 +76,9 @@ angular.module('auth.services', [])
 		//authService.saveToken('aabbcc');
 		var authService = $injector.get('authService');
 		if(res.config.url.indexOf(API) === 0 && res.data.token) {
-		      console.log('here');
-		      authService.saveToken(res.data.token);
-		      }
+		    console.log('here');
+		    authService.saveToken(res.data.token);
+		}
 		return res;
 	};
 	
