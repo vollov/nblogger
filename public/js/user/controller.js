@@ -11,7 +11,7 @@ function($scope, userService) {
 	
 	$scope.deleteUser = function(user, index) {
 		//console.log('delete user by id='+ user._id);
-		userService.deleteById(user._id);
+		userService.deleteById(user.pk);
 		$scope.users.splice(index, 1);
 	};
 }]);

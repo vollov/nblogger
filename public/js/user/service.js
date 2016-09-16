@@ -8,7 +8,7 @@ angular.module('user.services', [])
 	};
 	
 	service.getAll = function() {
-		return $http.get(API + 'users')
+		return $http.get(API + 'users/')
 		.success(function(data) {
 			angular.copy(data, service.users);
 		});
@@ -16,7 +16,7 @@ angular.module('user.services', [])
 	
 
 	service.create = function(user) {
-		return $http.post(API + 'users', user).success(function(data){
+		return $http.post(API + 'users/', user).success(function(data){
 			service.users.push(data);
 		});
 	};

@@ -22,10 +22,11 @@ function($scope, $state, authService) {
 	};
 
 	$scope.logIn = function() {
+		console.log('AuthCtrl.logIn()');
 		authService.logIn($scope.user).error(function(error) {
 			$scope.error = error;
 		}).then(function() {
-			$state.go('users');
+			$state.go('posts');
 		});
 	};
 }]);

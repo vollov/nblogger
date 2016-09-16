@@ -5,7 +5,7 @@ angular.module('markNote', ['ui.router','hc.marked','auth','user','post'])
 .constant('clientTokenName', 'jwt-client-token')
 .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
 	$stateProvider.state('posts', {
-		url : '/posts',
+		url : 'posts',
 		templateUrl : '/views/post/list.html',
 		controller : 'PostCtrl',
 		resolve: {
@@ -94,7 +94,7 @@ angular.module('markNote', ['ui.router','hc.marked','auth','user','post'])
 		controller : 'AuthCtrl',
 		onEnter : [ '$state', 'authService', function($state, authService) {
 			if (authService.isLoggedIn()) {
-				$state.go('home');
+				$state.go('posts');
 			}
 		} ],
 		data:{
@@ -127,7 +127,7 @@ angular.module('markNote', ['ui.router','hc.marked','auth','user','post'])
 			event.preventDefault();
 			// code for unauthorized access
 			console.log('state change event -- unauthorized');
-			$state.go('login');
+			$state.go('blogs');
 		}
 	});
 });

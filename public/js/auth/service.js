@@ -36,13 +36,14 @@ angular.module('auth.services', [])
 	};
 	
 	auth.register = function(user) {
-		return $http.post(API + '/register', user).success(function(data) {
+		return $http.post(API + 'register', user).success(function(data) {
 			auth.saveToken(data.token);
 		});
 	};
 
 	auth.logIn = function(user) {
-		return $http.post(API + '/login', user).success(function(data) {
+		console.log('auth.login()...');
+		return $http.post(API + 'login/', user).success(function(data) {
 			auth.saveToken(data.token);
 		});
 	};
